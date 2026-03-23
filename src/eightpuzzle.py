@@ -205,3 +205,4 @@ def createRandomEightPuzzle(moves=100):
     for _ in range(moves):
         puzzle = puzzle.result(random.sample(puzzle.legalMoves(), 1)[0])
     return puzzle
+ 
