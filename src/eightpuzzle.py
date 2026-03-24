@@ -204,5 +204,6 @@ def createRandomEightPuzzle(moves=100):
     puzzle = EightPuzzleState([1, 2, 3, 4, 5, 6, 7, 8, 0])
     for _ in range(moves):
         puzzle = puzzle.result(random.sample(puzzle.legalMoves(), 1)[0])
+    
     return puzzle
  

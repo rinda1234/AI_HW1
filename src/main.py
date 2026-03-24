@@ -7,7 +7,7 @@ if __name__ == '__main__': # 이 파일을 직접 실행했을 때만 아래 코
     print(puzzle)
 
     problem = EightPuzzleSearchProblem(puzzle) # 이 문제를 탐색 알고리즘일 다룰 수 있게 탐색 문제 객체로 바꿈.
-    search_algorithms = [bfs] # 사용할 알고리즘 목록, 다른 알고리즘도 같이 넣어두면 순차적으로 실행
+    search_algorithms = [dfs, bfs] # 사용할 알고리즘 목록, 다른 알고리즘도 같이 넣어두면 순차적으로 실행
     for alg in search_algorithms:
         path = alg(problem) # 해당 알고리즘으로 퍼즐을 풂. 반환되는 path는 ['up', 'left', 'down'] 보통 이런 식의 이동 명령 리스트
         print(f'{alg.__name__} found a path of {len(path)} moves: {str(path)}') # 알고리즘 이름, 이동 횟수, 실제 이동 목록
