@@ -95,35 +95,6 @@ def random_search(problem):
     return []
 
 
-# def depth_first_search(problem):
-#     """Search the deepest nodes in the search tree first using graph search."""
-#     "*** YOUR CODE HERE ***"
-#     start = problem.getStartState() 
-#     node = [(start, "", 0)] 
-#     frontier = [node]
-#     frontier_states = {start} # 상태 리스트 ex) 123456780
-#     explored = set() 
-    
-#     while frontier:
-#         node = frontier.pop() # 후보에서 가장 마지막 노드 제거 (깊이 우선 탐색이므로)
-#         state = node[-1][0] # 선택한 노드의 현재 상태 가져옴
-#         frontier_states.discard(state)  # 후보에서 현재 상태 제거
-
-#         if problem.isGoalState(state): # 현재 상태가 목표 상태인지 확인
-#             return [x[1] for x in node][1:] #  목적지까지의 행동 리스트 반환. node는 (상태, 행동, 비용) 튜플의 리스트. node[0]은 시작 상태, 행동은 빈 문자열, 비용은 0. node[1]부터는 실제 행동과 비용이 들어있음. [x[1] for x in node][1:]는 node에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환.   
-
-#         if state not in explored: # 현재 상태가 아직 탐색되지 않았다면
-#             explored.add(state) # 현재 상태를 탐색한 상태 집합에 추가
-#             for successor in problem.getSuccessors(state): # 현재 상태에서 갈 수 있는 다음 상태들 가져옴. successor는 (다음 상태, 그 상태로 가기 위한 행동, 그 행동의 비용) 튜플.
-#                  if successor[0] not in explored and successor[0] not in frontier_states:# 다음 상태가 아직 탐색되지 않았고 후보에도 없다면
-#                     parent = node[:] #     현재 노드의 경로를 복사해서 다음 노드의 경로로 사용. node는 (상태, 행동, 비용) 튜플의 리스트. node[-1]이 현재 상태, 행동, 비용. successor는 (다음 상태, 그 상태로 가기 위한 행동, 그 행동의 비용) 튜플. successor[0]은 다음 상태, successor[1]은 그 상태로 가기 위한 행동, successor[2]는 그 행동의 비용.
-#                     parent.append(successor) # 다음 노드의 경로에 다음 상태, 행동, 비용 추가. parent는 (상태, 행동, 비용) 튜플의 리스트. parent[-1]이 다음 상태, 행동, 비용.
-#                     frontier.append(parent) # 후보에 다음 상태 추가
-#                     frontier_states.add(successor[0])# 후보 상태 집합에도 다음 상태 추가
-
-#     return []
-
-# ver2
 def depth_first_search(problem):
     """Search the deepest nodes in the search tree first using graph search."""
     "*** YOUR CODE HERE ***"
@@ -133,17 +104,14 @@ def depth_first_search(problem):
     frontier_states = {start} # 상태 리스트 ex) 123456780
     explored = set() 
     
-    heap = []
-    
     while frontier:
         node = frontier.pop() # 후보에서 가장 마지막 노드 제거 (깊이 우선 탐색이므로)
         state = node[-1][0] # 선택한 노드의 현재 상태 가져옴
         frontier_states.discard(state)  # 후보에서 현재 상태 제거
 
         if problem.isGoalState(state): # 현재 상태가 목표 상태인지 확인
-            heapq.heappush(heap, (len([x[1] for x in node][1:]), [x[1] for x in node][1:]))  # 최소힙에 경로 리스트 넣음. 
-            continue
-
+            return [x[1] for x in node][1:] #  목적지까지의 행동 리스트 반환. node는 (상태, 행동, 비용) 튜플의 리스트. node[0]은 시작 상태, 행동은 빈 문자열, 비용은 0. node[1]부터는 실제 행동과 비용이 들어있음. [x[1] for x in node][1:]는 node에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환.   
+        
         if state not in explored: # 현재 상태가 아직 탐색되지 않았다면
             explored.add(state) # 현재 상태를 탐색한 상태 집합에 추가
             for successor in problem.getSuccessors(state): # 현재 상태에서 갈 수 있는 다음 상태들 가져옴. successor는 (다음 상태, 그 상태로 가기 위한 행동, 그 행동의 비용) 튜플.
@@ -153,9 +121,9 @@ def depth_first_search(problem):
                     frontier.append(parent) # 후보에 다음 상태 추가
                     frontier_states.add(successor[0])# 후보 상태 집합에도 다음 상태 추가
 
-    if heap:
-        return heapq.heappop(heap)[1] # 최소힙에서 가장 작은 경로 리스트 반환. heap은 (경로 길이, 경로 리스트) 튜플의 리스트. heapq.heappop(heap)하면 가장 작은 경로 길이를 가진 튜플이 반환되고, 그 튜플의 두 번째 요소인 경로 리스트를 반환.
     return []
+
+
 
 def breadth_first_search(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -173,7 +141,7 @@ def breadth_first_search(problem):
 
         if problem.isGoalState(state): 
             return [x[1] for x in node][1:]
-
+ 
         if state not in explored: 
             explored.add(state) 
             for successor in problem.getSuccessors(state):
@@ -189,7 +157,34 @@ def breadth_first_search(problem):
 def uniform_cost_search(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+
+    start = problem.getStartState() 
+    node = [(start, "", 0)] 
+    frontier = []
+    heapq.heappush(frontier, (0, 0, node)) # 비용이 가장 낮은 노드가 먼저 나오도록 우선순위 큐에 추가. (비용, 노드) 튜플로 저장.
+    frontier_states = {start} # 상태 리스트 ex) 123456780
+    explored = set() 
+    count = 0 # while 문 안에서 count = 0을 하게 되면 다른 상태에서 파생된 두 상태를 비교할때 서로 같은길이일 경우 우선순위를 비교못함. 
+
+    while frontier:
+        node = heapq.heappop(frontier)[2] # 후보에서 비용이 가장 낮은 노드 제거. heapq.heappop(frontier)는 (비용, 노드) 튜플을 반환하므로, [1]로 노드만 가져옴.
+        state = node[-1][0] 
+        frontier_states.discard(state) 
+
+        if problem.isGoalState(state): 
+            return [x[1] for x in node][1:]
+        
+        if state not in explored: 
+            explored.add(state) 
+            for successor in problem.getSuccessors(state):
+                if successor[0] not in explored and successor[0] not in frontier_states:
+                    parent = node[:]
+                    parent.append(successor)
+                    heapq.heappush(frontier, (problem.getCostOfActions([x[1] for x in parent][1:]), count, parent)) # 다음 노드를 우선순위 큐에 추가. 비용은 현재 노드까지의 행동 리스트의 총 비용으로 계산. [x[1] for x in parent][1:]는 parent에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환. problem.getCostOfActions(...)는 그 행동 리스트의 총 비용을 계산.
+                    frontier_states.add(successor[0])
+                    count += 1
+
+    return []
 
 
 def heuristic(state, problem=None):
