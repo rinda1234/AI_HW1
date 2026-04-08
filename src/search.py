@@ -158,11 +158,20 @@ def uniform_cost_search(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
 
+# 각 노드는 현재상태(state), 부모 노드(parent), 수행된 행동(action), 경로비용(cost)으로 표현. node는 (상태, 행동, 비용) 튜플의 리스트. node[-1]이 현재 상태, 행동, 비용. node[0]은 시작 상태, 행동은 빈 문자열, 비용은 0. node[1]부터는 실제 행동과 비용이 들어있음. frontier는 우선순위 큐로 구현. frontier_states는 후보들의 상태 집합으로 빠르게 탐색했는지 확인할 수 있게 함. explored는 이미 탐색한 상태 집합으로 빠르게 탐색했는지 확인할 수 있게 함. 우선순위 큐에 노드를 추가할 때는 그 노드까지의 총 경로비용을 기준으로 함. 
+# 1. 초기 상태를 frontier에 삽입
+# 2. frontier에서 경로 비용이 가장 작은 노드 선택
+# 3. 해당 노드가 목표 상태인지 검사, 
+# 4. 목표 상태이면 탐색 종료, 아니면 자식 노드 생성
+# 5. 각 자식 노드의 경로 비용 계산 후 frontier에 삽입, frontier가 비어 있을 때까지 탐색 반복.
+# 모든 간선 비용이 동일한 경우 BFS와 동일한 구조로 동작
+# 중복체크? 현재 상태가 이미 탐색된 상태인지 확인해야하나?
+# 
     start = problem.getStartState() 
     node = [(start, "", 0)] 
     frontier = []
     heapq.heappush(frontier, (0, 0, node)) # 비용이 가장 낮은 노드가 먼저 나오도록 우선순위 큐에 추가. (비용, 노드) 튜플로 저장.
-    frontier_states = {start} # 상태 리스트 ex) 123456780
+    frontier_states = {start} # 상태 리스트 ex) 123456780  , frontier에 있는 노드들의 상태 집합. set으로 저장해서 빠르게 탐색했는지 확인할 수 있게 함. ucs에선 frontier에 같은 상태가 여러개 들어갈 수 있음. 그러므로 처리 x , 지우기
     explored = set() 
     count = 0 # while 문 안에서 count = 0을 하게 되면 다른 상태에서 파생된 두 상태를 비교할때 서로 같은길이일 경우 우선순위를 비교못함. 
 
@@ -180,9 +189,12 @@ def uniform_cost_search(problem):
                 if successor[0] not in explored and successor[0] not in frontier_states:
                     parent = node[:]
                     parent.append(successor)
+                    # 매번 길이를 다시 구할 필요 없음 oldcost+ 1하면 됨. 
                     heapq.heappush(frontier, (problem.getCostOfActions([x[1] for x in parent][1:]), count, parent)) # 다음 노드를 우선순위 큐에 추가. 비용은 현재 노드까지의 행동 리스트의 총 비용으로 계산. [x[1] for x in parent][1:]는 parent에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환. problem.getCostOfActions(...)는 그 행동 리스트의 총 비용을 계산.
                     frontier_states.add(successor[0])
                     count += 1
+
+        
 
     return []
 

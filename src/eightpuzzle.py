@@ -192,7 +192,7 @@ class EightPuzzleSearchProblem(SearchProblem):
         This method returns the total cost of a particular sequence of actions.
         The sequence must be composed of legal moves
         """
-        return len(actions)
+        return len(actions) 
 
 # 랜덤한 퍼즐을 생성하는 함수
 def createRandomEightPuzzle(moves=100):
