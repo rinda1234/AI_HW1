@@ -192,14 +192,16 @@ def uniform_cost_search(problem):
         
         if state not in explored: 
             explored.add(state) # 현재 상태를 탐색한 상태 집합에 추가
+            frontier_states.pop(state, None) # 후보 상태 집합에서 현재 상태 제거. pop은 key가 존재하지 않아도 에러 안남.
             for successor in problem.getSuccessors(state):
-                if successor[0] not in explored and successor[0] in frontier_states and frontier_states[successor[0]] > cost + successor[2]: # 다음 상태가 아직 탐색되지 않았고 후보에도 없다면:
-                    parent = node[:]
-                    parent.append(successor)
-                    # 매번 길이를 다시 구할 필요 없음 oldcost+ 1하면 됨. 
-                    heapq.heappush(frontier, (problem.getCostOfActions([x[1] for x in parent][1:]), count, parent)) # 다음 노드를 우선순위 큐에 추가. 비용은 현재 노드까지의 행동 리스트의 총 비용으로 계산. [x[1] for x in parent][1:]는 parent에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환. problem.getCostOfActions(...)는 그 행동 리스트의 총 비용을 계산.
-                    frontier_states[successor[0]] = cost + successor[2]
-                    count += 1
+                if successor[0] not in explored: # 다음 상태가 아직 탐색되지 않았다면
+                    if successor[0] not in frontier_states or frontier_states[successor[0]] > cost + successor[2]: # 다음 상태가 후보에 없거나 후보에 있지만 현재 노드를 통해 가는 경로가 더 저렴하다면
+                        parent = node[:]
+                        parent.append(successor)
+                        # 매번 길이를 다시 구할 필요 없음 oldcost+ 1하면 됨. 
+                        heapq.heappush(frontier, (cost + successor[2], count, parent)) # 다음 노드를 우선순위 큐에 추가. 비용은 현재 노드까지의 행동 리스트의 총 비용으로 계산. [x[1] for x in parent][1:]는 parent에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환. problem.getCostOfActions(...)는 그 행동 리스트의 총 비용을 계산.
+                        frontier_states[successor[0]] = cost + successor[2]
+                        count += 1
 
         
 
