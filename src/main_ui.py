@@ -559,7 +559,7 @@ class PuzzleRequestHandler(BaseHTTPRequestHandler):
 
 
 def main():
-    server = ThreadingHTTPServer(("127.0.0.1", 8000), PuzzleRequestHandler)
+    server = ThreadingHTTPServer(("127.0.0.1", 8001), PuzzleRequestHandler)
     url = "http://127.0.0.1:8000"
     print(f"8-Puzzle UI running at {url}")
     print("Press Ctrl+C to stop the server.")

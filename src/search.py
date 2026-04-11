@@ -214,13 +214,59 @@ def heuristic(state, problem=None):
     goal in the provided SearchProblem. This heuristic is trivial.
     """
     "*** YOUR CODE HERE ***"
-    return 0
+    
+    result = 0
+    for row in range(3): 
+            for col in range(3):
+                if state.cells[row][col] != 0:
+                    result += abs((state.cells[row][col] - 1) // 3 - row) + abs((state.cells[row][col] - 1) % 3 - col)
+
+    
+    return result
+
+    
 
 
 def aStar_search(problem, heuristic=heuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    raiseNotDefined()
+    start = problem.getStartState() 
+    node = [(start, "", 0)] 
+    frontier = []
+    g = 0;
+    f = 0;
+    heapq.heappush(frontier, (f, 0, g, node)) # 비용이 가장 낮은 노드가 먼저 나오도록 우선순위 큐에 추가. (비용, 노드) 튜플로 저장.
+   
+    frontier_states = {start: 0}
+    explored = set() 
+    count = 0 # while 문 안에서 count = 0을 하게 되면 다른 상태에서 파생된 두 상태를 비교할때 서로 같은길이일 경우 우선순위를 비교못함. 
+
+    while frontier:
+        _, _, g, node = heapq.heappop(frontier) # 후보에서 비용이 가장 낮은 노드 제거. 
+        state = node[-1][0] 
+
+        # pop 된 순간 그 노드로 가는 경로의 최적해임.
+        
+        if problem.isGoalState(state): 
+            return [x[1] for x in node][1:]
+        
+        if state not in explored: 
+            explored.add(state) # 현재 상태를 탐색한 상태 집합에 추가
+            frontier_states.pop(state, None) # 후보 상태 집합에서 현재 상태 제거. pop은 key가 존재하지 않아도 에러 안남.
+            for successor in problem.getSuccessors(state):
+                if successor[0] not in explored: # 다음 상태가 아직 탐색되지 않았다면
+                    h = heuristic(successor[0], problem) # 다음 상태에 대한 휴리스틱 값 계산
+                    child_g = g + successor[2] # 다음 노드까지의 경로 비용 계산. g는 현재 노드까지의 경로 비용, successor[2]는 현재 노드에서 다음 노드로 가는 행동의 비용. 
+                    f = child_g + h # 다음 노드까지의 총 비용 계산. g는 현재 노드까지의 경로 비용, successor[2]는 현재 노드에서 다음 노드로 가는 행동의 비용, h는 다음 노드에서 목표 상태까지의 추정 비용.
+                    if successor[0] not in frontier_states or frontier_states[successor[0]] > child_g: # 다음 상태가 후보에 없거나 후보에 있지만 현재 노드를 통해 가는 경로가 더 저렴하다면
+                        parent = node[:]
+                        parent.append(successor)
+                        # 매번 길이를 다시 구할 필요 없음 oldcost+ 1하면 됨. 
+                        heapq.heappush(frontier, (f, count, child_g, parent)) # 다음 노드를 우선순위 큐에 추가. 비용은 현재 노드까지의 행동 리스트의 총 비용으로 계산. [x[1] for x in parent][1:]는 parent에서 행동 부분만 추출해서 리스트로 만들고, 첫 번째 요소(시작 상태의 행동)를 제외한 나머지를 반환. problem.getCostOfActions(...)는 그 행동 리스트의 총 비용을 계산.
+                        frontier_states[successor[0]] =  child_g
+                        count += 1                                              
+
+    return []
 
 
 rand = random_search

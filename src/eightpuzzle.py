@@ -60,10 +60,10 @@ class EightPuzzleState:
         False
         """ 
         # 퍼즐판 순서대로 검사.
-        current = 1
-        for row in range(3):
+        current = 1 
+        for row in range(3): 
             for col in range(3):
-                if current % 9 != self.cells[row][col]:
+                if current % 9 != self.cells[row][col]: #
                     return False
                 current += 1
         return True
